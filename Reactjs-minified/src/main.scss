@@ -1,0 +1,48 @@
+:root {
+	// font-size: 10px;
+
+	body {
+	margin: 0;
+		#root {
+			min-height: 100vh;
+			background: #EEE;
+
+			$theme-colors: (
+			    "primary": #F5CC0A,
+			    "secondary-analogous": #A8F50A,
+			    "tertiary-analogous": #F5570A
+			);
+
+			.navbar-brand-custom {
+				font-size: 1.4rem !important;
+			}
+
+			.navbar-custom {
+				padding: 2rem 4rem;
+			}
+
+			#login-section{
+				height: 768px;
+				width: 100%;
+				display: flex;
+				
+
+				.form-container {
+					position: absolute;
+					top: 50%;
+					margin-top: -137.5px;
+					left: 50%;
+					margin-left: -223px;
+					max-width: 446px;
+					// max-height: 275px;
+				}
+
+				.btn {
+					display: block;
+					width: 100%;
+				}
+			}
+			@import "../node_modules/bootstrap/scss/bootstrap.scss";
+		}
+	}
+}
