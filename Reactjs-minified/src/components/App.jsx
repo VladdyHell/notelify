@@ -1,136 +1,138 @@
-import React, { useState } from 'react';
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 // import '../main.scss';
-import LoadingScreen from './LoadingScreen';
-import Navbar from './Navbar';
-import LoginForm from './LoginForm';
-import Tabs from './Tabs';
-import Notes from './Notes';
+
+import LoadingScreen from "./LoadingScreen";
+import Navbar from "./Navbar";
+import LandingPage from "./LandingPage";
+
+import AuthPage from './AuthPage.js';
+import NotesPage from "./NotesPage.js";
+import Form from "./Form/Form";
+import Notes from "./Notes";
+
+import Footer from "./Footer";
+
+import login from "../login";
+import register from "../register";
+import logout from "../logout";
+import getStatus from "../getStatus";
 
 function App() {
+    const [isLoading, setLoading] = useState(null);
+    const [isLoggedIn, setLoggedIn] = useState(async () => {
+        setLoading(true);
+        const status = await getStatus();
+        console.log("Initial Status: " + status);
+        try {
+            setLoggedIn(status[0]);
+        } catch (err) {
+            console.log(err);
+        }
 
-	async function login(queryString) {
-		let res;
-		let data;
-		try {
-			res = await fetch('http://localhost:8080/login', {
-				method: 'POST',
-				headers: {
-				    'Content-Type': 'application/x-www-form-urlencoded',
-				    'Access-Control-Allow-Credentials': true,
-				    'Access-Control-Allow-Origin': 'http://localhost:8080'
-				},
-				body: queryString,
-				credentials: 'include'
-			});
-			data = await res.json();
-			if(res.ok) { 
-				console.log('Authorization Success') 
-			} else {
-				console.log('Authorization Failed');
-			}
+        setLoading(false);
+    });
+    const [errMes, setErrMes] = useState(null);
+    const [isError, setError] = useState(false);
 
-		} catch (err) {
-			console.log(err);
-		}
-		return data;
-	}
+    async function handleStatus(event) {
+        const { name } = event.target;
+        console.log("Form Name:");
+        console.log(name);
+        const queryString = new URLSearchParams(
+            new FormData(event.target)
+        ).toString();
+        console.log("Form Data: " + queryString);
 
-	async function logout() {
-		let res
-		try {
-			res = await fetch('http://localhost:8080/logout', {
-				method: 'POST',
-				headers: {
-					'Access-Control-Allow-Credentials': true
-				},
-				credentials: 'include'
-			});
-			console.log(res);
-		} catch (err) {
-			console.log(err);
-		}
-		return res;
-	}
+        event.preventDefault();
+        try {
+            if (name === "login") {
+                setLoading(true);
+                const res = await login(queryString, setErrMes);
+                console.log(`Logged In: ${res}`);
+                setLoading(false);
+            } else if (name === "register") {
+                setLoading(true);
+                const res = await register(queryString, setErrMes);
+                console.log(`Registered: ${res}`);
+                setLoading(false);
+            } else if (name === "logout") {
+                setLoading(true);
+                const res = await logout();
+                console.log(`Still logged in: ${res}`);
+                setLoading(false);
+            } else {
+                console.log("Invalid operation");
+            }
+            setLoading(true);
+            const status = await getStatus();
+            // const status = resStatus.json();
+            setLoggedIn(status[0]);
+            setLoading(false);
+        } catch (err) {
+            console.log(err);
+        }
 
-	async function getStatus() {
-		let res;
-		let data;
-		try{
-			res = await fetch('http://localhost:8080/checkauth', {
-				method: 'GET',
-				headers: {
-				    'Access-Control-Allow-Credentials': true
-				},
-				credentials: 'include'
-			});
-			data = await res.json();
-			if(res.ok) {
-				console.log('Status Request Success')
-				// setLoggedIn(res)
-				console.log(res)
-			} else { 
-				console.log('Status Request Failed');
-			}
-		} catch(err) {
-			console.log(err);
-		}
-		console.log(data);
-		return data;
-	}
+        if (errMes !== "Successfully Authenticated") {
+            setError(true);
+        } else {
+            setError(false);
+        }
+        if (isLoggedIn) {
+            setError(false);
+        }
+    }
 
-	const [isLoading, setLoading] = useState(true);
-	const [isLoggedIn, setLoggedIn] = useState(async () => {
-		const status = await getStatus();
-		console.log('Initial Status: ' + status);
-		setLoggedIn(status);
-		setLoading(false);
-	});
+    return (
+        <Router>
+            <div>
+                <LoadingScreen displayProp={isLoading} />
+                <Navbar />
+                <Routes>
+                	<Route path='/' element={<LandingPage />} />
 
-	async function handleStatus(event) {
-		const { name } = event.target;
-		console.log('Form Name: ' + name);
-		const queryString = new URLSearchParams(new FormData(event.target)).toString()
-		console.log('Form Data: ' + queryString);
+                	<Route 
+                		element={
+                			<AuthPage
+                				isLoggedIn={isLoggedIn}
+                				getStatus={getStatus}
+                				setLoading={setLoading}
+                			/>
+                		}>
+	                    <Route
+	                        path="/account"
+	                        element={
+	                            <Form
+	                                onLogin={handleStatus}
+	                                onRegister={handleStatus}
+	                                getStatus={getStatus}
+	                                message={errMes}
+	                                errorStatus={isError}
+	                                onClose={setError}
+	                                setLoading={setLoading}
+	                            />
+	                        }
+	                    />
+                    </Route>
+                    <Route element={
+                    	<NotesPage 
+	                    	isLoggedIn={isLoggedIn} 
+	                    	getStatus={getStatus}
+	                    	setLoading={setLoading} 
+	                    />
+	                }>
 
-		event.preventDefault();
-		try {
-			if (name === 'login') {
-				setLoading(true);
-				const res = await login(queryString);
-				// const data = await res.json();
-				console.log('Logged in ' + res.data);
-				setLoading(false);
-			} else if (name === 'logout'){
-				setLoading(true);
-				await logout();
-				console.log('Logged Out');
-				setLoading(false);
-			} else {
-				console.log('Invalid operation');
-			}
-			setLoading(true);
-			const status = await getStatus();
-			// const status = resStatus.json();
-			setLoggedIn(status);
-			setLoading(false);
-		} catch(err) {
-			console.log(err);
-		}
-	}
-
-	return (
-		<div id='react-root'>
-			<LoadingScreen displayProp={isLoading} />
-			{/*<Tabs />*/}
-			<Navbar />
-			{
-				!isLoggedIn || isLoggedIn !== true 
-				? <LoginForm onLogin={handleStatus} onGetStatus={getStatus} /> 
-				: <Notes onLogout={handleStatus} />
-			}
-		</div>
-	);
+                        <Route
+                            path="/notes"
+                            element={<Notes onLogout={handleStatus} />}
+                        />
+                    </Route>
+                </Routes>
+                <Footer />
+            </div>
+        </Router>
+    );
 }
 
 export default App;
