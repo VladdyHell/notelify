@@ -69,7 +69,7 @@ app.post("/login", (req, res, next) => {
 	const { rememberpass } = req.body;
 	DEBUG && console.log('Remember: '+rememberpass);
     passport.authenticate("local", (err, user, info) => {
-        // console.log(user);
+        // DEBUG && console.log(user);
         if (err) {
             return next(err);
         }

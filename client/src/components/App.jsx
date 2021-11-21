@@ -79,7 +79,14 @@ function App() {
         <Router>
             <div>
                 <LoadingScreen displayProp={isLoading} />
-                <Navbar />
+                <Navbar
+                    DEBUG={DEBUG}
+                    isLoggedIn={isLoggedIn} 
+                    getStatus={getStatus}
+                    setLoggedIn={setLoggedIn}
+                    setLoading={setLoading}
+                    onLogout={handleStatus}
+                />
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
 
@@ -122,7 +129,7 @@ function App() {
                     >
                         <Route
                             path="/notes"
-                            element={<Notes onLogout={handleStatus} />}
+                            element={<Notes />}
                         />
                     </Route>
                 </Routes>

@@ -13,7 +13,11 @@
             $primary: #F5CC0A;
             $secondary: #A8F50A;
             $tertiary: #F5570A;
-            $theme-colors: ( "primary": #F5CC0A, "secondary-analogous": #A8F50A, "tertiary-analogous": #F5570A);
+            $theme-colors: ( 
+                "primary": #F5CC0A, 
+                "secondary-analogous": #A8F50A, 
+                "tertiary-analogous": #F5570A
+            );
             #loading-screen {
                 background: $primary;
                 width: 100vw;
@@ -77,11 +81,13 @@
                         }
                         .profile-icon-link {
                             position: absolute;
-                            right: 0; // text-decoration: none;
+                            right: 0; 
+                            // text-decoration: none;
                             //    color: unset;
                             svg[data-testid="AccountCircleIcon"] {
                                 // position: absolute;
                                 // right: 0;
+                                font-size: 40px;
                             }
                             svg[data-testid="AccountCircleIcon"]::before {
                                 content: 'TEST';
@@ -92,6 +98,9 @@
                             } //                   &:focus, &:hover, &:visited, &:link, &:active {
                             // 	        text-decoration: none;
                             // }
+                            .btn {
+                                color: #FFF;
+                            }
                         }
                         .note-icon-link {
                             position: absolute;
@@ -187,6 +196,33 @@
                     min-height: 100vh;
                     padding: 160px 0;
                 }
+
+                .card {
+                    width: 576px;
+                    margin: 0 auto;
+
+                    .card-body {
+                        padding: 0 !important;
+
+                        form {
+                            div {
+                                margin-bottom: 0 !important;
+                            }
+
+                            .title {
+                                input {
+                                    height: 48px;
+                                    padding: 16px;
+                                }
+                            }
+                            .content {
+                                textarea {
+                                    resize: none;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             footer {
                 text-align: center;
@@ -196,6 +232,15 @@
                 font-weight: 500;
             }
             @import "../node_modules/bootstrap/scss/bootstrap.scss";
+        }
+    }
+    #menu-appbar {
+
+        button {
+            border: none;
+            background: unset;
+            width: 100%;
+            padding: 0;
         }
     }
 }

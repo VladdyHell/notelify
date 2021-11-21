@@ -1,17 +1,45 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { Link, useLocation } from 'react-router-dom';
+
+import { StickyNote2, AccountCircle } from "@mui/icons-material/";
+
 import {
     Navbar,
     Nav,
     // NavDropdown,
     // Form,
     // FormControl,
-    // Button,
+    Button,
     Container,
 } from "react-bootstrap";
-import { StickyNote2, AccountCircle } from "@mui/icons-material/";
 
-function NavbarComp() {
+import ProfileIcon from './NavbarProfileIcon';
+
+function NavbarComp(props) {
+    const location = useLocation();
+
+    useEffect(async () => {
+        props.setLoading(true);
+        const status = await props.getStatus();
+        props.DEBUG && console.log(`Navbar - Status: ${status}`);
+        try {
+            props.setLoggedIn(status[0]);
+        } catch(err) {
+            props.DEBUG && console.log(err);
+        }
+        props.setLoading(false);
+    }, []);
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <>
             <style type="text/css">
@@ -61,12 +89,18 @@ function NavbarComp() {
                                 </Link>
                             </Nav.Link>
                         </Nav>
-                        <Link to="/notes" className="note-icon-link">
+                        {/*<Link to="/notes" className="note-icon-link">
                             <StickyNote2 fontSize="large" />
-                        </Link>
-                        <Link to="/account" className="profile-icon-link">
-                            <AccountCircle fontSize="large" color="danger" />
-                        </Link>
+                        </Link>*/}
+                        {
+                            !props.isLoggedIn || props.isLoggedIn !== true ? (
+                                <Link to="/account" className="profile-icon-link">
+                                    <Button variant="tertiary-analogous">Signin</Button>
+                                </Link>
+                            ) : (
+                                <ProfileIcon onLogout={props.onLogout} />
+                            ) 
+                        }
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
