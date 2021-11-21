@@ -182,4 +182,5 @@ Loading complete
 
 # Others
 
-Reactjs-minified/dart-sass
+/dart-sass
+.sass-cache 

@@ -11,6 +11,8 @@ const cors = require("cors");
 
 const app = express();
 
+const DEBUG = false;
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
     cors({
@@ -60,10 +62,12 @@ passport.deserializeUser(User.deserializeUser());
 
 app.get("/checkauth", (req, res) => {
     res.send([req.isAuthenticated(), req.user]);
-    console.log(req.isAuthenticated());
+    DEBUG && console.log(req.isAuthenticated());
 });
 
 app.post("/login", (req, res, next) => {
+	const { rememberpass } = req.body;
+	DEBUG && console.log('Remember: '+rememberpass);
     passport.authenticate("local", (err, user, info) => {
         // console.log(user);
         if (err) {
@@ -72,11 +76,20 @@ app.post("/login", (req, res, next) => {
         if (!user) {
             return res.send([info.message]);
         }
+
+        if (rememberpass) {
+        	DEBUG && console.log('Session Saved');
+        	req.session.cookie.maxAge = 2592000000;
+        } else {
+        	DEBUG && console.log('Session Unsaved');
+        	req.session.cookie.expires = false;
+        }
+
         req.logIn(user, (err) => {
             if (err) {
                 return next(err);
             }
-            console.log(req.user);
+            DEBUG && console.log(req.user);
             return res.send(["Successfully Authenticated"]);
         });
     })(req, res, next);
@@ -87,11 +100,11 @@ app.post('/register', (req, res, next) => {
 		name: req.body.user,
 		username: req.body.username
 	}
-	console.log(user);
+	DEBUG && console.log(user);
 	User.register(user, req.body.password, (err, user) => {
 			if (err) return res.send([err.message]);
 			passport.authenticate('local')(req, res, () => {
-				console.log(`Created new user ${req.body.username}`);
+				DEBUG && console.log(`Created new user ${req.body.username}`);
 				return res.send(['Successfully Registered']);
 			});
 	});
@@ -100,7 +113,7 @@ app.post('/register', (req, res, next) => {
 app.post("/logout", (req, res) => {
     req.logout();
     res.send(req.isAuthenticated());
-    console.log(req.isAuthenticated());
+    DEBUG && console.log(req.isAuthenticated());
 });
 
 let port = process.env.PORT;
