@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useFocus, useRef } from "react";
 import { Container, Alert, Form, Card } from 'react-bootstrap';
 
 function Notes(props) {
     const [show, setShow] = useState(true);
     const [isFocused, setFocused] = useState(null);
+    const title = useRef();
 
     async function handleFocus(event) {
         const { name } = event.target;
-        const { _reactName } = await event;
-        let eventTrigger;
+        const { _reactName } = event;
 
         function finalEventTrigger() {
             return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ function Notes(props) {
                 }, 1);
             });
         }
-        eventTrigger = await finalEventTrigger();
+        const eventTrigger = await finalEventTrigger();
 
         console.log(eventTrigger);
         // console.log(name + ' ' + _reactName);
@@ -26,6 +26,10 @@ function Notes(props) {
             setFocused(true);
         } else if (eventTrigger === 'onBlur') {
             setFocused(false);
+        }
+
+        if (name === 'title') {
+            title.current && title.current.focus()
         }
     }
 
@@ -44,6 +48,7 @@ function Notes(props) {
                             {isFocused ?  (
                                 <Form.Group className="mb-3 title" controlId="title">
                                     <Form.Control 
+                                        ref={title}
                                         name="title" 
                                         type="email" 
                                         placeholder="Title"

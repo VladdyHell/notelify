@@ -170,6 +170,10 @@
   min-height: 100vh;
   padding: 160px 0;
 }
+:root body #root #notes-section .alert {
+  width: 768px;
+  margin: 0 auto 16px;
+}
 :root body #root #notes-section .card {
   width: 576px;
   margin: 0 auto;
@@ -186,6 +190,7 @@
 }
 :root body #root #notes-section .card .card-body form .content textarea {
   resize: none;
+  padding: 16px 16px 8px;
 }
 :root body #root footer {
   text-align: center;

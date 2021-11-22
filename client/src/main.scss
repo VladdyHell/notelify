@@ -196,7 +196,10 @@
                     min-height: 100vh;
                     padding: 160px 0;
                 }
-
+                .alert {
+                    width: 768px;
+                    margin: 0 auto 16px;
+                }
                 .card {
                     width: 576px;
                     margin: 0 auto;
@@ -218,6 +221,7 @@
                             .content {
                                 textarea {
                                     resize: none;
+                                    padding: 16px 16px 8px;
                                 }
                             }
                         }
