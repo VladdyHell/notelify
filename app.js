@@ -116,6 +116,35 @@ app.post("/logout", (req, res) => {
     DEBUG && console.log(req.isAuthenticated());
 });
 
+/// REST API ///
+
+app.route('/noteoperation')
+
+.post((req, res) => {
+	const note = { 
+		title: req.body.title,
+		content: req.body.content 
+	}
+	console.log(note);
+	console.log(req.user);
+
+	User.findById(req.user._id, (err, foundUser) => {
+		if (err) return res.send([err]);
+		if (foundUser) {
+			foundUser.notes.push(note);
+			foundUser.save(err=>{
+				if (err) {
+					console.log(err)
+					return res.send([err]);
+				} else {
+					console.log(`Successfully Pushed ${note.title} to the DB`);
+					return res.send([`Successfully Pushed ${note.title} to the DB`]);
+				}
+			});
+		}
+	});
+});
+
 let port = process.env.PORT;
 !port || port == "" ? (port = 8080) : null;
 app.listen(port, console.log(`Server started on port ${port}`));

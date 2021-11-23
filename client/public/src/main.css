@@ -192,6 +192,14 @@
   resize: none;
   padding: 16px 16px 8px;
 }
+:root body #root #notes-section .card .card-body form button {
+  background: #F5CC0A;
+  border-radius: 50%;
+  position: absolute;
+  right: 24px;
+  bottom: -20px;
+  color: #FFF;
+}
 :root body #root footer {
   text-align: center;
   padding-bottom: 80px;

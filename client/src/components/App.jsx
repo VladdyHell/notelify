@@ -75,6 +75,34 @@ function App() {
         }
     }
 
+    async function noteOperation(event) {
+        let res;
+        let data;
+        const queryString = new URLSearchParams(new FormData(event)).toString();
+        console.log('Notes Param: ' + queryString);
+
+        try {
+            res = await fetch('http://localhost:8080/noteoperation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: queryString,
+                credentials: 'include'
+            });
+            data = await res.json();
+            if (res.ok) {
+                console.log('Note Submission Request Success');
+            } else {
+                console.log('Note Submission Request Failed');
+            }
+        } catch(err) {
+            console.log(err);
+        }
+        console.log(data);
+        return data;
+    }
+
     return (
         <Router>
             <div>
@@ -129,7 +157,7 @@ function App() {
                     >
                         <Route
                             path="/notes"
-                            element={<Notes />}
+                            element={<Notes onOperateNote={noteOperation} />}
                         />
                     </Route>
                 </Routes>
