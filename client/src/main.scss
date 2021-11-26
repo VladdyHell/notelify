@@ -9,7 +9,7 @@
         margin: 0;
         #root {
             min-height: 100vh;
-            background: #EEE; // font-family: 'Dosis', sans-serif;
+            background: #EDEDED; // font-family: 'Dosis', sans-serif;
             $primary: #F5CC0A;
             $secondary: #A8F50A;
             $tertiary: #F5570A;
@@ -192,17 +192,18 @@
                 }
             } /// NOTES SECTION ///
             #notes-section {
-                .notes-container {
+                .notes-section-container {
                     min-height: 100vh;
                     padding: 160px 0;
+                    max-width: 1200px;
                 }
                 .alert {
                     width: 768px;
                     margin: 0 auto 16px;
                 }
-                .card {
+                .note-input {
                     width: 576px;
-                    margin: 0 auto;
+                    margin: 0 auto 64px;;
 
                     .card-body {
                         padding: 0 !important;
@@ -236,6 +237,41 @@
                         }
                     }
                 }
+                .notes-container {
+                    .row {
+                        .col {
+                            margin-bottom: 24px;
+
+                            .card {
+                                min-height: 320px;
+                                border-radius: 4px;
+                                padding: 48px 24px;
+
+                                @media (min-width: 992px) {
+                                    &{
+                                        min-width: 280px;
+                                    }
+                                }
+
+                                .card-body {
+                                    h2{}
+                                    p{}
+                                    .delete-icon {
+                                        position: absolute;
+                                        right: 16px;
+                                        bottom: 24px;
+                                        color: $tertiary;
+
+                                        &:hover {
+                                            cursor: pointer
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
             footer {
                 text-align: center;

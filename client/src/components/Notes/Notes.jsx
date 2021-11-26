@@ -1,12 +1,40 @@
-import React, { useState, useFocus, useRef } from "react";
-import { Container, Alert, Form, Card } from 'react-bootstrap';
+import React, { useState, useFocus, useRef, useEffect } from "react";
+import { Container, Alert, Form, Card, Row, Col, Button } from 'react-bootstrap';
 import { Fab, Zoom, Collapse, Fade } from '@mui/material/';
-import { Add as AddIcon } from '@mui/icons-material/';
+import { 
+    Add as AddIcon, 
+    DeleteForever as DeleteForeverIcon 
+} from '@mui/icons-material/';
+
+import fetchNotes from './fetchNotes.js';
 
 const DEBUG = false;
 
 
 function Notes(props) {
+
+    const [notes, setNotes] = useState([]);
+
+    function logNotes() {
+        console.log(notes);
+    }
+
+    useEffect(async ()=>{
+        fetchSetNotes();
+    }, []);
+
+    const fetchSetNotes = async () => {
+        props.setLoading(true);
+        try {
+            const data = await fetchNotes(setNotes);
+            setNotes(data);
+            DEBUG && console.log(notes);
+        } catch (err) {
+            DEBUG && console.log(err);
+        }
+        props.setLoading(false);
+    }
+
     const [show, setShow] = useState(true);
     const [isFocused, setFocused] = useState(null);
     const [note, setNote] = useState({
@@ -37,6 +65,7 @@ function Notes(props) {
                 title: '',
                 content: ''
             });
+            await fetchSetNotes();
         }
 
         function finalEventTrigger() {
@@ -71,14 +100,15 @@ function Notes(props) {
 
     return (
         <section id="notes-section">
-            <Container className="notes-container">
-                {show ? (
+            <Container className="notes-section-container">
+                {DEBUG && <Button onClick={logNotes}>Log Notes</Button>}
+                {DEBUG && show ? (
                     <Alert variant="success" onClose={() => setShow(false)} dismissible>
                         Welcome!
                     </Alert>
                 ) : null}
 
-                <Card>
+                <Card className="note-input">
                     <Card.Body>
                         <Form 
                             name="submit" 
@@ -129,6 +159,22 @@ function Notes(props) {
                         </Form>
                     </Card.Body>
                 </Card>
+                <Container className="notes-container">
+                    <Row>
+                    {notes && notes.map((item, index) => (
+                        // notes.length % 4 === 0 ? <Row> : null
+                            <Col className="col" lg={3} md={4} sm={6} xs={12}>
+                                <Card key={index}>
+                                    <Card.Body>
+                                        <h2>{item.title}</h2>
+                                        <p>{item.content}</p>
+                                        <DeleteForeverIcon className="delete-icon" />
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                    ))}
+                    </Row>
+                </Container>
             </Container>
         </section>
     );

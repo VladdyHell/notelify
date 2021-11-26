@@ -120,13 +120,23 @@ app.post("/logout", (req, res) => {
 
 app.route('/noteoperation')
 
+.get((req, res) => {
+	User.findById(req.user._id, (err, foundUser) => {
+		if (err) return res.send([err]);
+		if (foundUser) {
+			DEBUG && console.log(foundUser.notes);
+			return res.send(foundUser.notes);
+		}
+	});
+})
+
 .post((req, res) => {
 	const note = { 
 		title: req.body.title,
 		content: req.body.content 
 	}
 	console.log(note);
-	console.log(req.user);
+	DEBUG && console.log(req.user);
 
 	User.findById(req.user._id, (err, foundUser) => {
 		if (err) return res.send([err]);
@@ -134,10 +144,10 @@ app.route('/noteoperation')
 			foundUser.notes.push(note);
 			foundUser.save(err=>{
 				if (err) {
-					console.log(err)
+					DEBUG && console.log(err)
 					return res.send([err]);
 				} else {
-					console.log(`Successfully Pushed ${note.title} to the DB`);
+					DEBUG && console.log(`Successfully Pushed ${note.title} to the DB`);
 					return res.send([`Successfully Pushed ${note.title} to the DB`]);
 				}
 			});

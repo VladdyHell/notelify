@@ -183,4 +183,5 @@ Loading complete
 # Others
 
 /dart-sass
-.sass-cache 
+.sass-cache
+.prettierrc.json

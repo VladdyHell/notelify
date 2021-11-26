@@ -4,13 +4,13 @@ import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 // import '../main.scss';
 
 import LoadingScreen from "./LoadingScreen";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar/Navbar";
 import LandingPage from "./LandingPage";
 
-import AuthPage from "./AuthPage.js";
-import NotesPage from "./NotesPage.js";
+import AuthPage from "./Form/AuthPage.js";
+import NotesPage from "./Notes/NotesPage.js";
 import Form from "./Form/Form";
-import Notes from "./Notes";
+import Notes from "./Notes/Notes";
 
 import Footer from "./Footer";
 
@@ -79,7 +79,7 @@ function App() {
         let res;
         let data;
         const queryString = new URLSearchParams(new FormData(event)).toString();
-        console.log('Notes Param: ' + queryString);
+        DEBUG && console.log('Notes Param: ' + queryString);
 
         try {
             res = await fetch('http://localhost:8080/noteoperation', {
@@ -92,14 +92,14 @@ function App() {
             });
             data = await res.json();
             if (res.ok) {
-                console.log('Note Submission Request Success');
+                DEBUG && console.log('Note Submission Request Success');
             } else {
-                console.log('Note Submission Request Failed');
+                DEBUG && console.log('Note Submission Request Failed');
             }
         } catch(err) {
-            console.log(err);
+            DEBUG && console.log(err);
         }
-        console.log(data);
+        DEBUG && console.log(data);
         return data;
     }
 
@@ -157,7 +157,9 @@ function App() {
                     >
                         <Route
                             path="/notes"
-                            element={<Notes onOperateNote={noteOperation} />}
+                            element={<Notes 
+                                onOperateNote={noteOperation}
+                                setLoading={setLoading} />}
                         />
                     </Route>
                 </Routes>
